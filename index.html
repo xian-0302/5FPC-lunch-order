@@ -264,7 +264,6 @@
       <span id="syncLabel">載入中…</span>
       <div style="display:flex;gap:8px;">
         <button class="btn ghost" id="refreshBtn">重新整理</button>
-        <button class="btn ghost" id="clearBtn">清除全部選擇</button>
       </div>
     </div>
   </header>
@@ -545,12 +544,6 @@ function render(){
 }
 
 document.getElementById("refreshBtn").addEventListener("click", loadOrders);
-document.getElementById("clearBtn").addEventListener("click", async () => {
-  if(!confirm("確定要清除所有人的訂購選擇嗎？此動作將影響所有人，且無法復原。")) return;
-  orders = {};
-  await saveOrders();
-  render();
-});
 
 buildTableHead();
 buildTableBody();
