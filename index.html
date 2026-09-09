@@ -440,11 +440,6 @@ function buildTableBody(){
         select.appendChild(opt);
       });
 
-      const noneOpt = document.createElement("option");
-      noneOpt.value = NONE_KEY;
-      noneOpt.textContent = itemLabel({key:NONE_KEY});
-      select.appendChild(noneOpt);
-
       const currentVal = orders[orderKey(person, d.key)] || "";
       select.value = currentVal;
       updateSelectStyle(select);
