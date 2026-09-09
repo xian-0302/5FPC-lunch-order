@@ -369,8 +369,8 @@ ordersRef.on("value", (snapshot) => {
   setSyncLabel("已同步（即時更新）");
   render();
 }, (err) => {
-  console.error(err);
-  setSyncLabel("連線失敗，請檢查 Firebase 設定");
+  console.error("即時監聽失敗：", err);
+  setSyncLabel("連線失敗：" + (err && err.message ? err.message : err));
 });
 
 async function loadOrders(){
@@ -382,7 +382,8 @@ async function loadOrders(){
     setSyncLabel("已同步（即時更新）");
     render();
   }catch(e){
-    setSyncLabel("連線失敗，請重試");
+    console.error("loadOrders 失敗：", e);
+    setSyncLabel("連線失敗：" + (e && e.message ? e.message : e));
   }
 }
 
@@ -392,7 +393,9 @@ async function saveOrders(){
     setSyncLabel("已同步（即時更新）");
     document.getElementById("lastSaved").textContent = "最後儲存：" + new Date().toLocaleTimeString('zh-TW');
   }catch(e){
-    setSyncLabel("儲存失敗，請重試");
+    // 印出真正的錯誤原因，方便在 Console 診斷（例如 PERMISSION_DENIED、網域被擋等）
+    console.error("saveOrders 失敗：", e);
+    setSyncLabel("儲存失敗：" + (e && e.message ? e.message : e));
   }
 }
 
