@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>保五無人機午餐訂購站（勁請享用）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#2b2a25;
+    --paper:#f7f4ec;
+    --paper-raised:#ffffff;
+    --olive:#5c6b3f;
+    --olive-dark:#3f4a2b;
+    --rust:#a8552c;
+    --line:#d9d3c2;
+    --line-soft:#eae5d8;
+    --shadow:0 1px 0 rgba(0,0,0,0.05);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Noto Sans TC', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 20px 80px;}
+
+  header.site{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:20px;
+    padding-bottom:18px;
+    border-bottom:2px solid var(--olive-dark);
+    margin-bottom:22px;
+    flex-wrap:wrap;
+  }
+  .brand{display:flex;align-items:baseline;gap:14px;}
+  .brand .leaf{
+    font-size:28px;
+    line-height:1;
+    color:var(--olive);
+  }
+  h1{
+    font-family:'Noto Serif TC', serif;
+    font-weight:700;
+    font-size:30px;
+    margin:0;
+    letter-spacing:0.02em;
+  }
+  .subtitle{
+    font-size:13px;
+    color:#6b6555;
+    margin-top:4px;
+  }
+  .sync-status{
+    font-size:12.5px;
+    color:#6b6555;
+    text-align:right;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    align-items:flex-end;
+  }
+  .btn{
+    border:1px solid var(--olive-dark);
+    background:var(--olive);
+    color:#fff;
+    padding:7px 16px;
+    border-radius:3px;
+    font-size:13px;
+    font-family:inherit;
+    cursor:pointer;
+    transition:background 0.15s ease;
+  }
+  .btn:hover{background:var(--olive-dark);}
+  .btn.ghost{
+    background:transparent;
+    color:var(--olive-dark);
+    border:1px solid var(--line);
+  }
+  .btn.ghost:hover{border-color:var(--olive-dark);background:#eef0e5;}
+
+  .notice{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-left:4px solid var(--rust);
+    padding:14px 16px;
+    font-size:13.5px;
+    line-height:1.7;
+    color:#4a4636;
+    margin-bottom:26px;
+  }
+  .notice b{color:var(--rust);}
+
+  .table-scroll{
+    overflow-x:auto;
+    border:1px solid var(--line);
+    background:var(--paper-raised);
+    margin-bottom:36px;
+  }
+  table.order-table{
+    border-collapse:collapse;
+    width:100%;
+    min-width:920px;
+  }
+  table.order-table th, table.order-table td{
+    border-bottom:1px solid var(--line-soft);
+    border-right:1px solid var(--line-soft);
+    padding:10px 10px;
+    text-align:left;
+    vertical-align:middle;
+  }
+  table.order-table th:last-child, table.order-table td:last-child{border-right:none;}
+  table.order-table thead th{
+    background:var(--olive-dark);
+    color:#fff;
+    font-weight:500;
+    font-size:13.5px;
+    letter-spacing:0.02em;
+    position:sticky;
+    top:0;
+  }
+  table.order-table thead th.name-col{
+    background:var(--olive);
+  }
+  td.name-col{
+    font-weight:700;
+    background:#f1efe4;
+    white-space:nowrap;
+    font-size:14px;
+  }
+  select.item-select{
+    width:100%;
+    min-width:220px;
+    font-family:inherit;
+    font-size:13px;
+    padding:7px 8px;
+    border:1px solid var(--line);
+    border-radius:2px;
+    background:#fff;
+    color:var(--ink);
+  }
+  select.item-select.has-fee{
+    border-color:var(--rust);
+    color:var(--rust);
+    font-weight:500;
+  }
+  select.item-select:focus{
+    outline:2px solid var(--olive);
+    outline-offset:1px;
+  }
+
+  h2.section-title{
+    font-family:'Noto Serif TC', serif;
+    font-size:20px;
+    font-weight:700;
+    margin:0 0 14px;
+    color:var(--olive-dark);
+  }
+
+  .stats-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+    gap:16px;
+  }
+  .stat-card{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    padding:16px 18px;
+  }
+  .stat-card .date-label{
+    font-family:'Noto Serif TC', serif;
+    font-weight:700;
+    font-size:16px;
+    color:var(--olive-dark);
+    border-bottom:1px solid var(--line-soft);
+    padding-bottom:8px;
+    margin-bottom:10px;
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+  }
+  .date-label .count{
+    font-size:12px;
+    font-weight:400;
+    color:#8a836e;
+  }
+  ul.item-tally{
+    list-style:none;
+    margin:0 0 12px;
+    padding:0;
+    font-size:13px;
+    line-height:1.9;
+  }
+  ul.item-tally li{
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+    border-bottom:1px dashed var(--line-soft);
+    padding:2px 0;
+  }
+  ul.item-tally li span.qty{
+    font-weight:700;
+    color:var(--olive-dark);
+  }
+  .empty-note{
+    font-size:12.5px;
+    color:#a49c86;
+    padding:6px 0 12px;
+  }
+  .total-fee{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-size:14px;
+    font-weight:700;
+    padding-top:10px;
+    border-top:2px solid var(--olive-dark);
+  }
+  .total-fee .amount{
+    color:var(--rust);
+    font-size:17px;
+  }
+
+  footer.site{
+    margin-top:50px;
+    padding-top:16px;
+    border-top:1px solid var(--line);
+    font-size:12px;
+    color:#a49c86;
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+
+  @media (max-width:640px){
+    h1{font-size:24px;}
+    .wrap{padding:20px 14px 60px;}
+    header.site{align-items:flex-start;}
+    .sync-status{align-items:flex-start;text-align:left;}
+  }
+</style>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="site">
+    <div class="brand">
+      <span class="leaf">🌿</span>
+      <div>
+        <h1>保五無人機午餐訂購站</h1>
+        <div class="subtitle">勁請享用 · 2026 年 9 月 · 訂購週期：9/10、9/11、9/14、9/15、9/16、9/17</div>
+      </div>
+    </div>
+    <div class="sync-status">
+      <span id="syncLabel">載入中…</span>
+      <div style="display:flex;gap:8px;">
+        <button class="btn ghost" id="refreshBtn">重新整理</button>
+        <button class="btn ghost" id="clearBtn">清除全部選擇</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="notice">
+    公司補助上限 <b>120 元</b>。選擇超過 120 元的餐盒時，下拉選單會自動標示「<b>自付 X 元</b>」，即為需自行負擔的差額。<br>
+    此頁面的選擇結果為所有人共用同步，請留意他人的選擇後再送出自己的訂單。
+  </div>
+
+  <div class="table-scroll">
+    <table class="order-table" id="orderTable">
+      <thead>
+        <tr>
+          <th class="name-col">姓名</th>
+          <!-- date headers injected -->
+        </tr>
+      </thead>
+      <tbody>
+        <!-- rows injected -->
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">每日統計</h2>
+  <div class="stats-grid" id="statsGrid"></div>
+
+  <footer class="site">
+    <span>資料為所有訂購人員共用，最後更新後請按「重新整理」查看他人最新選擇。</span>
+    <span id="lastSaved"></span>
+  </footer>
+
+</div>
+
+<script>
+const DATES = [
+  {key:"9/10", label:"9/10（三）"},
+  {key:"9/11", label:"9/11（四）"},
+  {key:"9/14", label:"9/14（日）"},
+  {key:"9/15", label:"9/15（一）"},
+  {key:"9/16", label:"9/16（二）"},
+  {key:"9/17", label:"9/17（三）"},
+];
+
+const PEOPLE = [
+  "陳韋廷","曾怡旻","李宜旂","黃柏軒","江佳蕙","古佳和","歐欣怡",
+  "黃俊肇","程煒璁","郭淑君","杜明翰","張毓智","甘伯仲","詹子賢"
+];
+
+const ITEMS = [
+  {key:"chicken_breast", name:"舒肥雞胸餐盒", price:125, diff:5},
+  {key:"chicken_thigh", name:"祖傳雞腿餐盒", price:125, diff:5},
+  {key:"lemon_chicken", name:"夏日檸檬雞餐盒", price:130, diff:10},
+  {key:"spring_chicken", name:"醬燒春雞餐盒", price:135, diff:15},
+  {key:"mala_chicken", name:"川味香麻雞餐盒", price:135, diff:15},
+  {key:"scallion_chicken", name:"蔥油嫩雞胸餐盒", price:130, diff:10},
+  {key:"scallion_beef", name:"蔥燒雪花牛餐盒", price:145, diff:25},
+  {key:"kimchi_beef", name:"泡菜雪花牛餐盒", price:145, diff:25},
+  {key:"thai_pork", name:"泰式打拋豬餐盒", price:120, diff:0},
+  {key:"garlic_pork", name:"蒜醬里肌餐盒", price:120, diff:0},
+  {key:"kimchi_pork", name:"泡菜里肌餐盒", price:130, diff:10},
+  {key:"huadiao_ribs", name:"花雕滷軟骨餐盒", price:130, diff:10},
+  {key:"ginger_pork", name:"薑汁燒肉餐盒", price:130, diff:10},
+  {key:"mackerel", name:"鮮烤鯖魚餐盒", price:125, diff:5},
+];
+const NONE_KEY = "none";
+
+function itemLabel(item){
+  if(item.key === NONE_KEY) return "— 不訂餐 —";
+  let label = `${item.name} ${item.price}元`;
+  if(item.diff > 0) label += `（自付${item.diff}元）`;
+  return label;
+}
+
+function itemByKey(key){
+  if(!key || key === NONE_KEY) return {key:NONE_KEY, name:"不訂餐", price:0, diff:0};
+  return ITEMS.find(i => i.key === key) || {key:NONE_KEY, name:"不訂餐", price:0, diff:0};
+}
+
+let orders = {}; // { "person__date": itemKey }
+
+// ▼▼▼ 請將下方換成你自己 Firebase 專案「Project settings > 你的應用程式」裡的設定值 ▼▼▼
+const firebaseConfig = {
+  apiKey: "AIzaSyAYC6SnT-KL4zZHOqEbqCc-qcsbPw2QcM4",
+  authDomain: "fpc5-263c0.firebaseapp.com",
+  databaseURL: "https://fpc5-263c0-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "fpc5-263c0",
+  storageBucket: "fpc5-263c0.firebasestorage.app",
+  messagingSenderId: "501615464843",
+  appId: "1:501615464843:web:1fca6251ccd78fdf8c5f8e"
+};
+// ▲▲▲ 修改到這裡為止 ▲▲▲
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const ordersRef = db.ref("orders_2026_09");
+
+function orderKey(person, dateKey){ return `${person}__${dateKey}`; }
+
+// 即時監聽：只要任何人改了資料，Firebase 會自動推送給所有開著頁面的人
+ordersRef.on("value", (snapshot) => {
+  orders = snapshot.val() || {};
+  setSyncLabel("已同步（即時更新）");
+  render();
+}, (err) => {
+  console.error(err);
+  setSyncLabel("連線失敗，請檢查 Firebase 設定");
+});
+
+async function loadOrders(){
+  // 手動重新整理：強制向資料庫要一次最新資料（一般情況下 on("value") 已即時同步，這裡是保險用）
+  setSyncLabel("載入中…");
+  try{
+    const snapshot = await ordersRef.once("value");
+    orders = snapshot.val() || {};
+    setSyncLabel("已同步（即時更新）");
+    render();
+  }catch(e){
+    setSyncLabel("連線失敗，請重試");
+  }
+}
+
+async function saveOrders(){
+  try{
+    await ordersRef.set(orders);
+    setSyncLabel("已同步（即時更新）");
+    document.getElementById("lastSaved").textContent = "最後儲存：" + new Date().toLocaleTimeString('zh-TW');
+  }catch(e){
+    setSyncLabel("儲存失敗，請重試");
+  }
+}
+
+function setSyncLabel(text){
+  document.getElementById("syncLabel").textContent = text;
+}
+
+function buildTableHead(){
+  const headRow = document.querySelector("#orderTable thead tr");
+  DATES.forEach(d => {
+    const th = document.createElement("th");
+    th.textContent = d.label;
+    headRow.appendChild(th);
+  });
+}
+
+function buildTableBody(){
+  const tbody = document.querySelector("#orderTable tbody");
+  tbody.innerHTML = "";
+  PEOPLE.forEach(person => {
+    const tr = document.createElement("tr");
+    const nameTd = document.createElement("td");
+    nameTd.className = "name-col";
+    nameTd.textContent = person;
+    tr.appendChild(nameTd);
+
+    DATES.forEach(d => {
+      const td = document.createElement("td");
+      const select = document.createElement("select");
+      select.className = "item-select";
+      select.dataset.person = person;
+      select.dataset.date = d.key;
+
+      const blankOpt = document.createElement("option");
+      blankOpt.value = "";
+      blankOpt.textContent = "請選擇";
+      select.appendChild(blankOpt);
+
+      ITEMS.forEach(item => {
+        const opt = document.createElement("option");
+        opt.value = item.key;
+        opt.textContent = itemLabel(item);
+        select.appendChild(opt);
+      });
+
+      const noneOpt = document.createElement("option");
+      noneOpt.value = NONE_KEY;
+      noneOpt.textContent = itemLabel({key:NONE_KEY});
+      select.appendChild(noneOpt);
+
+      const currentVal = orders[orderKey(person, d.key)] || "";
+      select.value = currentVal;
+      updateSelectStyle(select);
+
+      select.addEventListener("change", async (e) => {
+        const val = e.target.value;
+        const key = orderKey(person, d.key);
+        if(!val){
+          delete orders[key];
+        }else{
+          orders[key] = val;
+        }
+        updateSelectStyle(select);
+        renderStats();
+        await saveOrders();
+      });
+
+      td.appendChild(select);
+      tr.appendChild(td);
+    });
+
+    tbody.appendChild(tr);
+  });
+}
+
+function updateSelectStyle(select){
+  const item = itemByKey(select.value);
+  select.classList.toggle("has-fee", item.diff > 0);
+}
+
+function refreshAllSelectValues(){
+  document.querySelectorAll("select.item-select").forEach(select => {
+    const key = orderKey(select.dataset.person, select.dataset.date);
+    select.value = orders[key] || "";
+    updateSelectStyle(select);
+  });
+}
+
+function renderStats(){
+  const grid = document.getElementById("statsGrid");
+  grid.innerHTML = "";
+
+  DATES.forEach(d => {
+    const card = document.createElement("div");
+    card.className = "stat-card";
+
+    const tally = {}; // itemKey -> count
+    let totalFee = 0;
+    let orderedCount = 0;
+
+    PEOPLE.forEach(person => {
+      const val = orders[orderKey(person, d.key)];
+      if(!val || val === NONE_KEY) return;
+      const item = itemByKey(val);
+      tally[val] = (tally[val] || 0) + 1;
+      totalFee += item.diff;
+      orderedCount += 1;
+    });
+
+    const label = document.createElement("div");
+    label.className = "date-label";
+    label.innerHTML = `<span>${d.label}</span><span class="count">已訂 ${orderedCount} / ${PEOPLE.length} 人</span>`;
+    card.appendChild(label);
+
+    const keys = Object.keys(tally);
+    if(keys.length === 0){
+      const empty = document.createElement("div");
+      empty.className = "empty-note";
+      empty.textContent = "目前尚無人訂購";
+      card.appendChild(empty);
+    }else{
+      const ul = document.createElement("ul");
+      ul.className = "item-tally";
+      keys.sort((a,b) => tally[b] - tally[a]);
+      keys.forEach(k => {
+        const item = itemByKey(k);
+        const li = document.createElement("li");
+        const feeNote = item.diff > 0 ? `（自付${item.diff}元）` : "";
+        li.innerHTML = `<span>${item.name}${feeNote}</span><span class="qty">x${tally[k]}</span>`;
+        ul.appendChild(li);
+      });
+      card.appendChild(ul);
+    }
+
+    const totalDiv = document.createElement("div");
+    totalDiv.className = "total-fee";
+    totalDiv.innerHTML = `<span>當日應自付總額</span><span class="amount">${totalFee} 元</span>`;
+    card.appendChild(totalDiv);
+
+    grid.appendChild(card);
+  });
+}
+
+function render(){
+  refreshAllSelectValues();
+  renderStats();
+}
+
+document.getElementById("refreshBtn").addEventListener("click", loadOrders);
+document.getElementById("clearBtn").addEventListener("click", async () => {
+  if(!confirm("確定要清除所有人的訂購選擇嗎？此動作將影響所有人，且無法復原。")) return;
+  orders = {};
+  await saveOrders();
+  render();
+});
+
+buildTableHead();
+buildTableBody();
+loadOrders();
+</script>
+</body>
+</html>
